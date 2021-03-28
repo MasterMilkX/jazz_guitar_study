@@ -1,0 +1,225 @@
+<html>
+	<head>
+		<title>Minor/Major Pentatonix</title>
+	</head>
+	<style>
+		body{
+			margin:auto;
+		}
+		h1{
+			color:#000;
+			font-size:15vw;
+			margin-top:3vw;
+		}
+		h2{
+			font-size: 7vw;
+		}
+		h3{
+			font-size: 5vw;
+			margin:1vw;
+		}
+		h4{
+			font-size: 2.5vw;
+			margin:2vw;
+		}
+		.container{
+			width: 80%;
+			padding-left: 0;
+			padding-right: 0;
+			margin-left: auto;
+			margin-right: auto;
+			text-align:center;
+			margin-top:2vw;
+		}
+		#inNotes{
+			width: 100%;
+			margin-top:-10vw;
+		}
+		input{
+			font-size:3vw;
+		}
+		button{
+			width:10vw;
+			margin:2vw;
+			padding:0.75vw;
+		}
+		div{
+			/*border: 1px solid red;*/
+		}
+	</style>
+	<body onload='newSet();changeMode("majors");'>
+		<div class='container'>
+			<div id='in'>
+				<h1 id='scale' style='margin-top: 1vw;'>&#9837;&#9839;</h1>
+				<h3 id='inNotes'>&nbsp;</h3>
+				<input id='thsSet' type='number' min='2' max='7' size='5' style='margin:auto;margin-bottom:2vw;display: none' onchange='reset();'>
+			</div>
+
+			<div>
+				<h4 id='status'>&nbsp;</h3>
+				<h4 id='score'>&nbsp;</h3>
+			</div>
+			<div id='modeSelect'>
+				<button onclick='changeMode("majors")' id='majorsBtn'>Majors</button>
+				<button onclick='changeMode("minors")' id='minorsBtn'>Minors</button>
+				<button onclick='changeMode("ths")' id='thsBtn'>#-ths</button>
+			</div>
+		</div>
+	</body>
+	<script>
+		let flat = '&#9837;';
+		let sharp = '&#9839;';
+
+		let sharp_notes = ['E','F','F'+sharp,'G','G'+sharp,'A','A'+sharp,'B','C','C'+sharp,'D','D'+sharp];
+		let flat_notes = ['E','F','G'+flat,'G','A'+flat,'A','B'+flat,'B','C','D'+flat,'D','E'+flat];
+
+		let flatRoots = ['C','E'+flat,'B'+flat,'F','C','G','D','A'+flat];
+		let sharpRoots = ['A','E','B','F'+sharp,'C'+sharp];
+		let allRoots = flatRoots.concat(sharpRoots);
+
+		let major_penta = [0,2,4,7,9]
+		let minor_penta = [0,3,5,7,10];
+		let major = [0,2,4,5,7,9,11,0]
+		let curNotes = [];
+		let inNotes = [];
+		let curMode = "";
+
+		var curScore = 0;
+
+		//gets new pentatonix set
+		function newSet(){
+			let penta = [];
+			if(curMode == "majors"){
+				penta = major_penta;
+			}else if(curMode == "minors"){
+				penta = minor_penta;
+			}
+
+			let n = Math.floor(Math.random()*allRoots.length);
+			let root = allRoots[n];
+			curNotes = [];
+			let noteSet = (sharpRoots.indexOf(root) != -1 ? sharp_notes : flat_notes);
+			let rootInd = noteSet.indexOf(root);
+
+			//one note for ths
+			if(curMode == "ths"){
+				curNotes.push(noteSet[(rootInd+major[document.getElementById("thsSet").value-1])%noteSet.length]);
+			}
+			//5 notes for majors minors
+			else{
+				for(let i=0;i<5;i++){
+					curNotes.push(noteSet[(rootInd+penta[i])%noteSet.length]);
+				}
+			}
+			
+			
+			document.getElementById("scale").innerHTML = root;
+			console.log(root)
+		}
+
+		function checkNotes(){
+			let c = true;
+			if(curMode == "ths"){
+				c = (inNotes[0] == curNotes[0]);
+			}else{
+				for(let i=0;i<5;i++){
+					if(curNotes[i] != inNotes[i]){
+						c = false;
+						break;
+					}
+				}
+			}
+			
+
+			if(!c){
+				curScore = 0;
+				document.getElementById("status").innerHTML = "WRONG!";
+				document.getElementById("status").style.color = "#ff0000";
+			}else{
+				curScore++;
+				document.getElementById("status").innerHTML = "NICE!";
+				document.getElementById("status").style.color = "#0000ff";
+				newSet();
+			}
+
+			document.getElementById("score").innerHTML = curScore;
+			inNotes = [];
+			document.getElementById("inNotes").innerHTML = "&nbsp;";
+		}
+
+		//convert the input
+		function changeSign(i){
+			let alterI = i.value.toUpperCase();
+			if(alter.length > 1){
+				if(alterI[1] == 'Z'){
+					alterI[1] = '&#9837';
+				}else if(alterI[1] == 'X'){
+					alterI[1] = '&#9839';
+				}
+			}
+			
+			i.value = alterI;
+		}
+
+		//add to the set
+		function addNote(note){
+			canAddNote = false;
+			if(inNotes.length == 0)
+				document.getElementById("status").innerHTML = "&nbsp;";
+			
+			//one note for the ths, 5 for the major/minors
+			let maxNotes = (curMode == "ths" ? 1 : 5);
+
+			if(note == sharp || note == flat){
+				inNotes[inNotes.length-1] += note;
+			}else if(inNotes.length < maxNotes){
+				inNotes.push(note);
+			}
+			document.getElementById("inNotes").innerHTML = inNotes.join(" ");
+		}
+
+		//change the mode of game
+		function changeMode(m){
+			curMode = m;
+
+			document.getElementById("thsSet").style.display = (curMode == "ths" ? "block" : "none");
+
+			document.getElementById("majorsBtn").style.backgroundColor = "#EFEFEF";
+			document.getElementById("minorsBtn").style.backgroundColor = "#EFEFEF";
+			document.getElementById("thsBtn").style.backgroundColor = "#EFEFEF";
+			document.getElementById(m+"Btn").style.backgroundColor = "#f8dd1c";
+
+			reset();
+		}
+
+		function reset(){
+			curScore = 0;
+			document.getElementById("score").innerHTML = curScore;
+			inNotes = [];
+			document.getElementById("inNotes").innerHTML = "&nbsp;";
+			newSet();
+		}
+
+
+		//add notes
+		let canAddNote = true;
+		window.addEventListener("keydown", function(e) {
+		    if([65,66,67,68,69,70,71,38,40].indexOf(e.keyCode) > -1 && canAddNote){
+		    	if(e.keyCode == 38)
+		    		addNote(sharp);
+		    	else if(e.keyCode == 40)
+		    		addNote(flat);
+		    	else
+		    		addNote(String.fromCharCode(e.keyCode).toUpperCase());
+		    }else if(e.keyCode == 13){
+		    	checkNotes();
+		    }
+		});
+		window.addEventListener("keyup",function(e){
+			if([65,66,67,68,69,70,71,38,40].indexOf(e.keyCode) > -1){
+				canAddNote = true;
+			}
+		});
+
+	</script>
+</html>
