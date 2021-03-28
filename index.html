@@ -64,6 +64,9 @@
 				<button onclick='changeMode("minors")' id='minorsBtn'>Minors</button>
 				<button onclick='changeMode("ths")' id='thsBtn'>#-ths</button>
 			</div>
+			<div>
+				<button onclick='help()'>Help</button>
+			</div>
 		</div>
 	</body>
 	<script>
@@ -200,6 +203,9 @@
 			newSet();
 		}
 
+		function help(){
+			alert("Press the letter on the keyboard for the note.\nUse up arrow key for sharps and down arrow key for flats.\nEx. C# == 'c' key then 'up arrow' key")
+		}
 
 		//add notes
 		let canAddNote = true;
