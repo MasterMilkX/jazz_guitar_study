@@ -50,7 +50,7 @@
 	<body onload='newSet();changeMode("majors");'>
 		<div class='container'>
 			<div id='in'>
-				<h1 id='scale' style='margin-top: 1vw;'>&#9837;&#9839;</h1>
+				<h1 id='scale' style='margin-top: 0.5vw;'>&#9837;&#9839;</h1>
 				<h3 id='inNotes'>&nbsp;</h3>
 				<input id='thsSet' type='number' min='2' max='7' size='5' value='5' style='margin:auto;margin-bottom:2vw;display: none' onchange='reset();'>
 			</div>
@@ -59,12 +59,12 @@
 				<h4 id='status'>&nbsp;</h3>
 				<h4 id='score'>&nbsp;</h3>
 			</div>
-			<div id='modeSelect'>
+			<div id='modeSelect' style='margin-top: 0.5vw'>
 				<button onclick='changeMode("majors")' id='majorsBtn'>Majors</button>
 				<button onclick='changeMode("minors")' id='minorsBtn'>Minors</button>
 				<button onclick='changeMode("ths")' id='thsBtn'>#-ths</button>
 			</div>
-			<div>
+			<div style='margin-top: -2vw'>
 				<button onclick='help()'>Help</button>
 			</div>
 		</div>
@@ -196,6 +196,7 @@
 		}
 
 		function reset(){
+			console.log("new");
 			curScore = 0;
 			document.getElementById("score").innerHTML = curScore;
 			inNotes = [];
