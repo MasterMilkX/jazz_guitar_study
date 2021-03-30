@@ -8,7 +8,7 @@
 		}
 		h1{
 			color:#000;
-			font-size:15vw;
+			font-size:14vw;
 			margin-top:3vw;
 		}
 		h2{
@@ -75,6 +75,18 @@
 
 		let sharp_notes = ['E','F','F'+sharp,'G','G'+sharp,'A','A'+sharp,'B','C','C'+sharp,'D','D'+sharp];
 		let flat_notes = ['E','F','G'+flat,'G','A'+flat,'A','B'+flat,'B','C','D'+flat,'D','E'+flat];
+		let conversion = {
+			"F":"E&#9839;",
+			"F&#9839;":"G&#9837;",
+			"G&#9839;":"A&#9837;",
+			"A&#9839;":"B&#9837;",
+			"B&#9837;":"A&#9839;",
+			"C&#9839;":"D&#9837;",
+			"D&#9839;":"E&#9837;",
+			"C":"B&#9839;",
+			"G&#9837;":"F&#9839;",
+			"D&#9837;":"C&#9839;"
+		}
 
 		let flatRoots = ['C','E'+flat,'B'+flat,'F','C','G','D','A'+flat];
 		let sharpRoots = ['A','E','B','F'+sharp,'C'+sharp];
@@ -98,6 +110,8 @@
 				penta = minor_penta;
 			}
 
+			let nths = document.getElementById("thsSet").value;
+
 			let n = Math.floor(Math.random()*allRoots.length);
 			let root = allRoots[n];
 			curNotes = [];
@@ -106,7 +120,10 @@
 
 			//one note for ths
 			if(curMode == "ths"){
-				curNotes.push(noteSet[(rootInd+major[document.getElementById("thsSet").value-1])%noteSet.length]);
+				let note = noteSet[(rootInd+major[nths-1])%noteSet.length];
+				if(note[0] == root[0])
+					note = conversion[note];
+				curNotes.push(note);
 			}
 			//5 notes for majors minors
 			else{
